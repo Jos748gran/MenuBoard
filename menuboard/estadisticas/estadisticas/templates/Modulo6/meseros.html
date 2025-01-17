@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mejor Mesero</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #ff5722;
+            color: #f9f9f9;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .mesero {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid white;
+        }
+
+        .mesero:last-child {
+            border-bottom: none;
+        }
+
+        .mesero img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .mesero .info {
+            flex-grow: 1;
+        }
+
+        .mesero .info h2 {
+            margin: 0 0 5px;
+            font-size: 1.5rem;
+            color:black;
+        }
+
+        .mesero .info p {
+            margin: 0;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .mesero .badge {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+            background-color: #ff5722;
+            color: white;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .button-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .button-container button:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1> Meseros </h1>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="mesero">
+                <img src="{% static 'Estadistica/images/MeseroH1.png' %}" alt="Mesero">
+                <div class="info">
+                    <h2>Juan Pérez</h2>
+                    <p>Edad: 25 años</p>
+                </div>
+            </div>
+            <div class="mesero">
+                <img src="{% static 'Estadistica/images/Mesera1.png' %}" alt="Mesera">
+                <div class="info">
+                    <h2>María López</h2>
+                    <p>Edad: 30 años</p>
+                </div>
+            </div>
+            <div class="mesero">
+                <img src="{% static 'Estadistica/images/MeseroH2.png' %}" alt="Mesero">
+                <div class="info">
+                    <h2>Carlos Gómez</h2>
+                    <p>Edad: 28 años</p>
+                </div>
+            </div>
+            <div class="mesero">
+                <img src="{% static 'Estadistica/images/Mesera2png.png' %}" alt="Mesera">
+                <div class="info">
+                    <h2>Ana Martínez</h2>
+                    <p>Edad: 22 años</p>
+                </div>
+            </div>
+            <div class="mesero">
+                <img src="{% static 'Estadistica/images/MeseroH3.png' %}" alt="Mesero">
+                <div class="info">
+                    <h2>Pedro Sánchez</h2>
+                    <p>Edad: 35 años</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+           <center> <h2>Mejor Mesero</h2> </center>
+            <div class="mesero">
+                <img src="{% static 'Estadistica/images/MeseroH1.png' %}" alt="Mesero">
+                <div class="info">
+                    <h2>Juan Pérez</h2>
+                    <p>Mesero destacado del mes por su excelente servicio al cliente y dedicación.</p>
+                </div>
+                <span class="badge">Mejor Mesero</span>
+            </div>
+        </div>
+
+        <div class="button-container">        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Restaurante Los Sabores. Todos los derechos reservados.
+    </div>
+</body>
+</html>
