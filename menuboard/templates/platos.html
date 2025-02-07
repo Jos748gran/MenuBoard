@@ -1,0 +1,31 @@
+{% extends "staff.html" %}
+{% load static %}
+
+{% block title %}Pagina Platos{% endblock %}
+
+{% block content %}
+     <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+<div>
+    <h2>Bienvenido, {{ user.username }}</h2>
+    <div class="col-md-6">
+            <h5>Lista de platos disponibles</h5>
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plato in platos %}
+                    <tr>
+                        <td>{{ plato.nombre }}</td>
+                        <td>{{ plato.precio }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>
+
+{% endblock %}

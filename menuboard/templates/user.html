@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Pagina Cliente{% endblock %}
+
+{% block component %}
+    <ul class="nav" id="main-menu">
+                        <li class="text-center user-image-back" >
+                            <img src="{% static 'assets_user/img/staff.svg' %}" class="img-responsive img-centered" />
+                        </li>
+                        <li>
+                            <a href="{% url 'user' %}"><i class="fa fa-desktop "></i>Inicio</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-edit "></i>Operaciones<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#">Pedidos</a>
+                                </li>
+                                <li>
+                                    <a href="#">Historial</a>
+                                </li>
+                            </ul>
+                        </li>
+                </ul>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Bienvenido, {{ user.username }}</h2>
+    <h3>Menu</h3>
+</div>
+
+    <div class="row">
+
+
+                    <div class="col-md-6">
+                        <h5>Buttons Samples</h5>
+                        <a href="{% url 'crear_item_pedido' %}" class="btn btn-success">Seleccionar Plato</a>
+                        <a href="#" class="btn btn-success">Asignar mesa</a>
+                        <br />
+                        <br />
+                        <a href="#" class="btn btn-info">Anotar pedido</a>
+                        <a href="#" class="btn btn-info">Atender pedido</a>
+                        <a href="#" class="btn btn-info">Realizar reserva</a>
+                        <br />
+                        <br />
+                        <a href="#" class="btn btn-warning">Mostrar historial</a>
+                        <a href="#" class="btn btn-warning">Mostrar registro historico</a>
+                        <br />
+                        <br />
+                    </div>
+    </div>
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    {% for plato in platos %}
+    <div class="col-md-3 col-sm-3 col-xs-6">
+        <div class="panel panel-primary text-center no-boder bg-color-blue">
+            <div class="panel-body">
+                {% if plato.imagen %}
+                    <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}" width="200" height="200">
+                {% else %}
+                    Imagen no disponible
+                {% endif %}
+                <h3>{{ plato.nombre }}</h3>
+            </div>
+            <div class="panel-footer back-footer-blue">
+                {{ plato.precio }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

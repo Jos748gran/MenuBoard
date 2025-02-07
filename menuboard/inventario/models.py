@@ -138,27 +138,11 @@ class ReporteBodega(models.Model):
 
 
 class Proveedor(models.Model):
-    nombre = models.CharField(max_length=100)
     email = models.EmailField()
     direccion = models.CharField(max_length=255)
-    contacto = models.CharField(max_length=100)
 
     def str(self):
-        return f"{self.nombre} - {self.contacto}"
-
-
-class Pedido(models.Model):
-    cliente = models.CharField(max_length=255)
-    fecha = models.DateField()
-    ESTADO_PEDIDO_CHOICES = [
-        ('pendiente', 'Pendiente'),
-        ('completado', 'Completado'),
-        ('cancelado', 'Cancelado'),
-    ]
-    estado = models.CharField(max_length=50, choices=ESTADO_PEDIDO_CHOICES)
-
-    def str(self):
-        return f"Pedido de {self.cliente} - {self.estado} ({self.fecha})"
+        return f" {self.email}"
 
 
 class Categoria(models.Model):
@@ -177,13 +161,6 @@ class Usuario(models.Model):
     def str(self):
         return self.nombre
 
-
-class Producto(models.Model):
-    nombre = models.CharField(max_length=100)
-    precio = models.FloatField()
-
-    def str(self):
-        return self.nombre
 
 
 class Persona(models.Model):

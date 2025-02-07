@@ -1,0 +1,14 @@
+{% extends "staff.html" %}
+{% load static %}
+
+{% block title %}Eliminar Item Pedido{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    <p>¿Estás seguro de que deseas eliminar el cliente {{ cliente.nombre }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'clientes' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

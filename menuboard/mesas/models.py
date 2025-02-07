@@ -3,6 +3,7 @@ from django.db import models
 from enum import Enum
 from django.db.models import Manager
 from abc import ABC, abstractmethod
+from pedidos.models import Persona
 
 
 class EstadoMesa(Enum):
@@ -51,11 +52,7 @@ class Mesa(models.Model):
 
 
 
-class Persona(models.Model):
-    nombre = models.CharField(max_length=100)
-    cedula_persona = models.CharField(max_length=10, unique=True)
-    email = models.EmailField(unique=True)
-    telefono = models.CharField(max_length=15, unique=True)
+
 
 class Cliente(Persona):
     activo = models.BooleanField(default=True, verbose_name="Estado activo")
@@ -75,21 +72,6 @@ class Cliente(Persona):
     def consultar_disponibilidad(self, mesa):
         return mesa.validar_disponibilidad()
 
-    def activar_cliente(self):
-        """
-        Activa al cliente si está inactivo.
-        """
-        if not self.activo:
-            self.activo = True
-            self.save()
-
-    def desactivar_cliente(self):
-        """
-        Desactiva al cliente si está activo.
-        """
-        if self.activo:
-            self.activo = False
-            self.save()
 
     def hacer_reserva(self, datos_reserva):
         """

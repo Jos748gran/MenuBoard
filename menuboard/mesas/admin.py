@@ -13,26 +13,18 @@ class MesaAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(Persona)
-class PersonaAdmin(admin.ModelAdmin):
-    search_fields = ('nombre', 'cedula_persona', 'email')
-    list_display = ('nombre', 'cedula_persona', 'email', 'telefono')
-
-
-
+"""
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
     search_fields = ('nombre', 'cedula_persona', 'email')
     list_display = ('nombre', 'cedula_persona', 'email')
    # Puedes añadir un filtro personalizado dependiendo de relaciones.
-
-
-
+"""
 @admin.register(Personal)
 class PersonalAdmin(admin.ModelAdmin):
-    list_display = ('nombre','identificador_Personal', 'cedula_persona', 'email', 'rol')
+    list_display = ('nombre','identificador_Personal',  'rol')
     list_filter = ('rol',)
-    search_fields = ('nombre', 'email')
+    search_fields = ('nombre', )
 
 
 

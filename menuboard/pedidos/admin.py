@@ -29,14 +29,14 @@ class RestauranteAdmin(admin.ModelAdmin):
     list_editable = ('menu',)
 admin.site.register(Restaurante,RestauranteAdmin)
 class PlatoAdmin(admin.ModelAdmin):
-    list_display = ('nombre','precio')
+    list_display = ('nombre','precio', 'imagen')
     list_editable = ('precio',)
 admin.site.register(Plato,PlatoAdmin)
 class MenuAdmin(admin.ModelAdmin):
     list_display = ('id',)
 admin.site.register(Menu,MenuAdmin)
 class MesaAdmin(admin.ModelAdmin):
-    list_display = ('numero','capacidad','esta_disponible')
+    list_display = ('id','numero','capacidad','esta_disponible')
     list_editable = ('capacidad',)
 admin.site.register(Mesa,MesaAdmin)
 class RegistroHistoricoAdmin(admin.ModelAdmin):

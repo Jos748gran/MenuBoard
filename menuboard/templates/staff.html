@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block title %}Pagina Empleado{% endblock %}
+
+{% block component %}
+    <ul class="nav" id="main-menu">
+                    <li class="text-center user-image-back" >
+                        <img src="{% static 'assets_user/img/staff_user.svg' %}" class="img-responsive img-centered" />
+                    </li>
+                    <li >
+                        <a href="{% url 'staff' %}"><i class="fa fa-desktop "></i>Inicio</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-edit "></i>Operaciones<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{% url 'menus' %}">Menus</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'mesas' %}">Mesas</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'clientes' %}">Clientes</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'pedidos' %}">Pedidos</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap "></i>Empleados<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{% url 'meseros' %}">Meseros</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'personal_cocina' %}">Personal de Cocina</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Bienvenido, {{ user.username }}</h2>
+
+</div>
+    <div class="row">
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <h5>Widget Box One</h5>
+                        <div class="panel panel-primary text-center no-boder bg-color-blue">
+                            <div class="panel-body">
+                                <i class="fa fa-bar-chart-o fa-5x"></i>
+                                <h3>120 GB </h3>
+                            </div>
+                            <div class="panel-footer back-footer-blue">
+                                Disk Space Available
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <h5>Widget Box Two</h5>
+                        <div class="alert alert-info text-center">
+                            <i class="fa fa-desktop fa-5x"></i>
+                            <h3>100$ </h3>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Buttons Samples</h5>
+                        <a href="#" class="btn btn-success">Mostrar mesas disponibles</a>
+                        <a href="#" class="btn btn-success">Asignar mesa</a>
+                        <br />
+                        <br />
+                        <a href="#" class="btn btn-info">Anotar pedido</a>
+                        <a href="#" class="btn btn-info">Atender pedido</a>
+                        <a href="#" class="btn btn-info">Realizar reserva</a>
+                        <br />
+                        <br />
+                        <a href="#" class="btn btn-warning">Mostrar historial</a>
+                        <a href="#" class="btn btn-warning">Mostrar registro historico</a>
+                        <br />
+                        <br />
+
+                    </div>
+    </div>
+    </div>
+{% endblock %}

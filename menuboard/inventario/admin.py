@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib import admin
 from .models import (
     Insumo, Operacion, Historial, Alerta, ReporteConsumo, Inventario, Proveedor,
-    Pedido, Categoria, Usuario, Producto, Persona, Administrador, ReporteBodega
+    Categoria, Usuario, Persona, Administrador, ReporteBodega
 )
 
 
@@ -73,19 +73,8 @@ class InventarioAdmin(admin.ModelAdmin):
 # Configuración del modelo Proveedor
 @admin.register(Proveedor)
 class ProveedorAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'email', 'direccion', 'contacto')
-    search_fields = ('nombre', 'email', 'contacto')
-    ordering = ('nombre',)
-
-
-# Configuración del modelo Pedido
-@admin.register(Pedido)
-class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('cliente', 'fecha', 'estado')
-    search_fields = ('cliente', 'estado')
-    list_filter = ('estado', 'fecha')
-    date_hierarchy = 'fecha'
-    ordering = ('-fecha',)
+    list_display = ('email', 'direccion',)
+    search_fields = ('email',)
 
 
 # Configuración del modelo Categoria
@@ -103,13 +92,6 @@ class UsuarioAdmin(admin.ModelAdmin):
     search_fields = ('nombre', 'email', 'rol')
     ordering = ('nombre',)
 
-
-# Configuración del modelo Producto
-@admin.register(Producto)
-class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'precio')
-    search_fields = ('nombre',)
-    ordering = ('nombre',)
 
 
 # Configuración del modelo Persona
