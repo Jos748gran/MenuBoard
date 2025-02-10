@@ -1,0 +1,32 @@
+{% extends "user.html" %}
+
+{% load static %}
+
+{% block title %}Crear Item de Pedido{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="cliente" value="{{ cliente.id }}">
+        <div class="form-group">
+            <label for="cliente">Cliente:</label>
+            <input type="text" class="form-control" value="{{ cliente.nombre }}" readonly>
+        </div>
+        <input type="hidden" name="plato" value="{{ plato.id }}">
+        <div class="form-group">
+            <label for="plato">Plato:</label>
+            <input type="text" class="form-control" value="{{ plato.nombre }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="cantidad">Cantidad:</label>
+            {{ form.cantidad }}
+        </div>
+        <div class="form-group">
+            <label for="observacion">Observación:</label>
+            {{ form.observacion }}
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="javascript:history.back()" class="btn btn-danger">Cancelar</a>
+    </form>
+{% endblock %}

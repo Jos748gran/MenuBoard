@@ -1,31 +1,25 @@
+from datetime import datetime
 from enum import Enum
-
 from django.core.validators import MinValueValidator
 from django.db import models
-from abc import ABC, abstractmethod, ABCMeta
-from django.db.models.base import ModelBase
-
+import random
 
 #Enumerador:
 class Estado(Enum):
-    en_preparacion = 'EN_PREPARACION'
+    en_preparacion = 'EN PREPARACION'
     pagado = 'PAGADO'
     pendiente = 'PENDIENTE'
     preparado = 'PREPARADO'
     servido = 'SERVIDO'
     reservado = 'RESERVADO'
 
-#Interfazes:
-class MultiModelABCMeta(ModelBase, ABCMeta):
-    pass
-class InteraccionPedido(models.Model, ABC, metaclass=MultiModelABCMeta):
+#Interfaz:
+class InteraccionPedido(models.Model):
     class Meta:
         abstract = True
     #Metodos:
-    @abstractmethod
     def actualizar_estado(self, estado:'Estado', pedido:'Pedido'):
         pass
-    @abstractmethod
     def visualizar_estado(self, pedido:'Pedido'):
         pass
 
@@ -33,29 +27,9 @@ class InteraccionCliente(models.Model):
     class Meta:
         abstract = True
     #Metodos:
-    @abstractmethod
-    def agregar_cliente(self):
+    def asignar_mesa(self, cliente:'Cliente' , cantidad_persona: int):
         pass
-    @abstractmethod
-    def anotar_pedido(self, pedido:'Pedido'):
-        pass
-    @abstractmethod
-    def asignar_mesa(self):
-        pass
-    @abstractmethod
     def atender_pedido(self):
-        pass
-    @abstractmethod
-    def gestionar_pedido(self):
-        pass
-    @abstractmethod
-    def mostrar_cuenta(self):
-        pass
-    @abstractmethod
-    def mostrar_menu(self):
-        pass
-    @abstractmethod
-    def realizar_reserva(self):
         pass
 #Clases:
 class Persona(models.Model):
@@ -76,12 +50,15 @@ class Empleado(Persona, InteraccionPedido):
     #Metodos:
     def actualizar_estado(self, estado:Estado, pedido:'Pedido'):
         pedido.estado = estado
+        pedido.save()
     def visualizar_estado(self, pedido:'Pedido'):
         return pedido.estado
 
 class Mesero(Empleado):
     #Atributos
     esta_ocupado = models.BooleanField(default=False, editable=False)
+    #Asociacion:
+    restaurante = models.ForeignKey('Restaurante', on_delete=models.CASCADE, related_name='meseros', default=1, editable=False)
     class Meta:
         verbose_name = "Mesero"
         verbose_name_plural = "Meseros"
@@ -100,6 +77,8 @@ class Mesero(Empleado):
 class PersonalCocina(Empleado):
     #Atributos:
     esta_cocinando = models.BooleanField(default=False, editable=False)
+    #Asociacion:
+    restaurante = models.ForeignKey('Restaurante', on_delete=models.CASCADE, related_name='personal_cocina_list', default=1, editable=False)
     class Meta:
         verbose_name = "Personal de Cocina"
         verbose_name_plural = "Personales de Cocina"
@@ -110,10 +89,15 @@ class PersonalCocina(Empleado):
             empleados = PersonalCocina.objects.filter(identificacion__startswith=f"11P").count() + 1
             self.identificacion = f"11P{letra_nombre}{empleados:02d}"
         super().save(*args, **kwargs)
-    def preparar_pedido(self):
-        pass
-    def servir_pedido(self):
-        pass
+    def preparar_pedido(self, pedido:'Pedido'):
+        tiempo_espera = random.randint(10, 20)
+        pedido.tiempo_espera = tiempo_espera
+        pedido.estado = 'EN_PREPARACION'
+        pedido.save()
+        return tiempo_espera
+    def servir_pedido(self, pedido:'Pedido'):
+        pedido.estado = 'SERVIDO'
+        pedido.save()
     def __str__(self):
         return self.nombre+' | '+self.identificacion
 
@@ -121,11 +105,11 @@ class Cliente(Persona):
     #Atributos:
     cantidad_persona = models.PositiveIntegerField(editable=False, default=1)
     es_para_llevar = models.BooleanField(editable=False, default=False)
-    realizo_pedido = models.BooleanField(editable=False,default=False)
     #Asociacion:
     historial = models.OneToOneField('Historial', on_delete=models.CASCADE, null=True, editable=False,
                                      related_name='cliente')
     mesa = models.OneToOneField('Mesa', on_delete=models.CASCADE, null=True, editable=False)
+    restaurante = models.ForeignKey('Restaurante', on_delete=models.CASCADE, related_name='clientes', default=1, editable=False)
     class Meta:
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
@@ -135,16 +119,26 @@ class Cliente(Persona):
             historial = Historial.objects.create()
             self.historial = historial
         super().save(*args, **kwargs)
-    def modificar_pedido(self):
-        pass
-    def ocupar_mesa(self, mesa_ocupada):
-        self.mesa = mesa_ocupada
-    def realizar_pago(self):
-        pass
-    def realizar_pedido(self):
-        pass
-    def visualizar_mesa_asignada(self):
-        pass
+
+    @staticmethod
+    def realizar_pago(pedido:'Pedido', monto:float):
+        pedido.estado = Estado.pagado.value
+        pedido.save()
+    @staticmethod
+    def visualizar_mesa_asignada(cliente:'Cliente'):
+        return cliente.mesa.numero if cliente.mesa else 'Para llevar'
+    def ordenar_pedido(self, es_para_llevar:bool, mesa_ocupada:'Mesa'=None):
+        if es_para_llevar:
+            self.es_para_llevar = True
+            self.mesa = None
+        else:
+            self.es_para_llevar = False
+            self.mesa = mesa_ocupada
+        self.save()
+        nuevo_pedido = Pedido.objects.create(cliente=self, mesa=self.mesa)
+        for item in self.item_pedido_list.all():
+            nuevo_pedido.item_pedido_list.add(item)
+        nuevo_pedido.save()
 
     def __str__(self):
         return self.nombre+' | '+self.cedula
@@ -161,18 +155,20 @@ class ItemPedido(models.Model):
         verbose_name_plural = "Items del Pedido"
     # Metodos:
     def __str__(self):
-        return self.plato.nombre+' | '+str(self.cantidad)+' | '+self.cliente.nombre+' | '+self.observacion
+        return self.plato.nombre+' | '+str(self.cantidad)+' | '+self.observacion
 
 class Pedido(models.Model):
     #Atributos:
     fecha_actual = models.DateTimeField(auto_now=True, editable=False)
     informacion = models.TextField(editable=False)
     numero = models.PositiveIntegerField(editable=False, unique=True)
-    cliente = models.OneToOneField('Cliente', on_delete=models.CASCADE)
+    tiempo_espera = models.PositiveIntegerField(editable=False, null=True)
     #Asociacion:
-    estado = models.CharField(max_length=50, choices=[(tag.value, tag.name) for tag in Estado], default=Estado.pendiente)
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE, related_name='pedidos', default=4)
+    estado = models.CharField(max_length=50, choices=[(tag.name, tag.value) for tag in Estado], default=Estado.pendiente.value)
     mesa = models.OneToOneField('Mesa', on_delete=models.CASCADE, null=True, blank=True)
     item_pedido_list = models.ManyToManyField(ItemPedido, blank=True)
+    restaurante = models.ForeignKey('Restaurante', on_delete=models.CASCADE, related_name='pedidos', default=1)
     class Meta:
         verbose_name = "Pedido"
         verbose_name_plural = "Pedidos"
@@ -181,16 +177,25 @@ class Pedido(models.Model):
         if not self.numero:
             self.numero = Pedido.objects.count() + 1
         super().save(*args, **kwargs)
-    def agregar_item(self):
-        pass
     def calcular_total(self):
-        pass
+        total = sum(item.plato.precio * item.cantidad for item in self.item_pedido_list.all())
+        return round(total, 2)
     def mostrar_tiempo_espera(self):
-        pass
+        if self.tiempo_espera:
+            return f"Tiempo de espera: {self.tiempo_espera} minutos"
+        return "El pedido aún no ha sido atendido"
     def registrar_informacion(self):
-        pass
-    def remover_item(self):
-        pass
+        informacion = f"Pedido N°: {self.numero}\n"
+        informacion += f"Fecha: {self.fecha_actual}\n"
+        informacion += f"Cliente: {self.cliente.nombre}\n"
+        informacion += f"Estado: {self.estado}\n"
+        informacion += f"Mesa: {self.mesa.numero if self.mesa else 'Para llevar'}\n"
+        informacion += f"Total: {self.calcular_total()}\n"
+        informacion += "Items del Pedido:\n"
+        for item in self.item_pedido_list.all():
+            informacion += f"  - {item.plato.nombre} x {item.cantidad} (Observación: {item.observacion})\n"
+        self.informacion = informacion
+        self.save()
     def __str__(self):
         return str(self.numero)+' | '+str(self.fecha_actual)+' | '+str(self.estado)+' | '+str(self.mesa.numero)
 
@@ -201,10 +206,6 @@ class Historial(models.Model):
         verbose_name = "Historial"
         verbose_name_plural = "Historiales"
     #Metodos:
-    def agregar_pedido(self):
-        pass
-    def mostrar_informacion(self):
-        pass
     def __str__(self):
         return str(self.id)+' | '+self.cliente.nombre
 
@@ -212,12 +213,6 @@ class Restaurante(InteraccionCliente):
     #Atributos:
     nombre = models.CharField(max_length=50)
     #Asociacion:
-    clientes = models.ManyToManyField(Cliente, blank=True)
-    meseros = models.ManyToManyField(Mesero, blank=True)
-    personal_cocina_list = models.ManyToManyField(PersonalCocina, blank=True)
-    pedidos = models.ManyToManyField(Pedido, blank=True)
-    mesas = models.ManyToManyField('Mesa', blank=True)
-    menu = models.OneToOneField('Menu', on_delete=models.CASCADE, null=True, blank=True)
     registro_historico = models.OneToOneField('RegistroHistorico', on_delete=models.CASCADE, null=True,
                                               editable=False, related_name='restaurante')
     class Meta:
@@ -229,44 +224,47 @@ class Restaurante(InteraccionCliente):
             registro = RegistroHistorico.objects.create()
             self.registro_historico = registro
         super().save(*args, **kwargs)
-    def agregar_cliente(self):
-        pass
-    def agregar_mesero(self):
-        pass
-    def agregar_personal_cocina(self):
-        pass
-    def mostrar_historial(self):
-        pass
     def mostrar_mesas_disponibles(self):
-        pass
-    def mostrar_registro_historico(self):
-        pass
-    def remover_mesa(self):
-        pass
+        mesas_disponibles = Mesa.objects.filter(esta_disponible=True, restaurante=self)
+        return mesas_disponibles
     def __str__(self):
         return self.nombre
     #Interfaz:
-    def agregar_cliente(self):
-        pass
-    def anotar_pedido(self, pedido: 'Pedido'):
-        pass
-    def asignar_mesa(self):
-        pass
+    def asignar_mesa(self, cliente: Cliente, cantidad_persona: int):
+        mesas_disponibles = self.mostrar_mesas_disponibles()
+        for mesa in mesas_disponibles:
+            if mesa.capacidad >= cantidad_persona:
+                cliente.mesa = mesa
+                mesa.ocupar()
+                cliente.save()
+                mesa.save()
     def atender_pedido(self):
-        pass
-    def gestionar_pedido(self):
-        pass
-    def mostrar_cuenta(self):
-        pass
-    def mostrar_menu(self):
-        pass
-    def realizar_reserva(self):
-        pass
+        pedidos_pendientes = Pedido.objects.filter(estado=Estado.pendiente.value)
+        return pedidos_pendientes
+    def realizar_reserva(self, cliente: Cliente, fecha: datetime.date, cantidad_persona: int, mesa: 'Mesa' = None):
+        if mesa and mesa.capacidad < cantidad_persona:
+            raise ValueError("La cantidad de personas excede la capacidad de la mesa.")
+
+        if mesa and Pedido.objects.filter(mesa=mesa, fecha_actual__date=fecha, estado=Estado.reservado.value).exists():
+           raise ValueError("La mesa ya está reservada para la fecha indicada.")
+
+        nuevo_pedido = Pedido.objects.create(
+           cliente=cliente,
+           mesa=mesa,
+           estado=Estado.reservado.value,
+           fecha_actual=datetime.combine(fecha, datetime.min.time())
+        )
+        nuevo_pedido.save()
+        return nuevo_pedido
+
 
 class Plato(models.Model):
     #Atributos:
     nombre = models.CharField(max_length=50, unique=True)
     precio = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0)])
+    imagen = models.ImageField(upload_to='platos/', null=True, blank=True)
+    #Asociacion:
+    menu = models.ForeignKey('Menu', on_delete=models.CASCADE, related_name='platos', default=1, editable=False)
     class Meta:
         verbose_name = "Plato"
         verbose_name_plural = "Platos"
@@ -274,20 +272,13 @@ class Plato(models.Model):
     def __str__(self):
         return self.nombre+' | '+str(self.precio)
 
-
 class Menu(models.Model):
     #Asociacion:
-    platos = models.ManyToManyField(Plato)
+    restaurante = models.OneToOneField('Restaurante', on_delete=models.CASCADE, related_name='menu', default=1, editable=False)
     class Meta:
         verbose_name = "Menu"
         verbose_name_plural = "Menus"
     #Metodos:
-    def agregar_plato(self):
-        pass
-    def mostrar_platos(self):
-        pass
-    def remover_plato(self):
-        pass
     def __str__(self):
         return str(self.id)
 
@@ -296,6 +287,8 @@ class Mesa(models.Model):
     capacidad = models.PositiveIntegerField(default=1)
     esta_disponible = models.BooleanField(default=True, editable=False)
     numero = models.PositiveIntegerField(editable=False, unique=True)
+    #Asociacion:
+    restaurante = models.ForeignKey('Restaurante', on_delete=models.CASCADE, related_name='mesas', default=1, editable=False)
     class Meta:
         verbose_name = "Mesa"
         verbose_name_plural = "Mesas"
@@ -306,7 +299,7 @@ class Mesa(models.Model):
         super().save(*args, **kwargs)
     def desocupar(self):
         self.esta_disponible = True
-    def reservar(self):
+    def ocupar(self):
         self.esta_disponible = False
     def __str__(self):
         return str(self.numero)+' | '+str(self.capacidad)+' | '+str(self.esta_disponible)
@@ -314,9 +307,5 @@ class Mesa(models.Model):
 class RegistroHistorico(models.Model):
     pedidos = models.ManyToManyField(Pedido, editable=False, blank=True)
     #Metodos:
-    def registrar_pedido(self):
-        pass
-    def mostrar_lista_pedidos(self):
-        pass
     def __str__(self):
         return str(self.id)+' | '+self.restaurante.nombre

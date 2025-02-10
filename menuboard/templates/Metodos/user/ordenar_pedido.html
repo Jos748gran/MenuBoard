@@ -1,0 +1,22 @@
+{% extends "user.html" %}
+
+{% load static %}
+
+{% block title %}Ordenar un Pedido{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="es_para_llevar">Es para llevar?:</label>
+            {{ form.es_para_llevar }}
+        </div>
+        <div class="form-group">
+            <label for="mesa_ocupada">Mesa ocupada:</label>
+            {{ form.mesa_ocupada }}
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="javascript:history.back()" class="btn btn-danger">Cancelar</a>
+    </form>
+{% endblock %}

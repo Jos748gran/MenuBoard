@@ -1,0 +1,15 @@
+{% extends "staff.html" %}
+
+{% load static %}
+
+{% block title %}Eliminar Item de Pedido{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    <p>¿Estás seguro de que deseas eliminar el item de pedido "{{ item_pedido.plato.nombre }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'item_pedido_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}a
