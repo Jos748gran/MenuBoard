@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Bienvenido, {{ user.username }}{% endblock %}
+
+{% block component %}
+    <ul class="nav" id="main-menu">
+        <li class="text-center user-image-back">
+            <img src="{% static 'assets_user/img/staff.svg' %}" class="img-responsive img-centered"
+                 alt="imagen de usuario"/>
+        </li>
+        <li>
+            <a href="{% url 'user' %}"><i class="fa fa-desktop "></i>Inicio</a>
+        </li>
+        <li>
+            <a href="#"><i class="fa fa-edit "></i>Operaciones<span class="fa arrow"></span></a>
+            <ul class="nav nav-second-level">
+                <li>
+                    <a href="{% url 'pedidos' %}">Pedidos</a>
+                </li>
+                <li>
+                    <a href="#">Historial</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#"><i class="fa fa-desktop "></i>Reservas</a>
+        </li>
+        <li>
+            <a>
+                <img src="{% static 'assets/imgs/Logo.png' %}" style="width: 235px" alt="logo">
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/menus.css' %}">
+    <div>
+        <h2><i class="fas fa-book-open"></i> 𝓜𝓔𝓝𝓤</h2>
+        <a href="{% url 'item_pedido_list' %}" class="label-cart"><i class="fas fa-shopping-cart"></i> Orden</a>
+    </div>
+    <div class="menu">
+        {% for plato in platos %}
+            <div class="dish">
+                <div>
+                    <div>
+                        {% if plato.imagen %}
+                            <img src="{{ plato.imagen.url }}" alt="{{ plato.nombre }}">
+                        {% else %}
+                            Imagen no disponible
+                        {% endif %}
+                        <h3>{{ plato.nombre }}</h3>
+                        <p>{{ plato.precio }}$</p>
+                        <a href="{% url 'crear_item_pedido_user' plato.id %}" class="add-button">Pedir</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

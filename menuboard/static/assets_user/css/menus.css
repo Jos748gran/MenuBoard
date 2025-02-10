@@ -1,0 +1,131 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #343a40;
+    margin: 0;
+    padding: 0;
+}
+
+.menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+}
+
+.dish {
+    background-color: #626365;
+    border: 1px solid #2a3034;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 200px;
+    text-align: center;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.dish img {
+    width: 100%;
+    height: 150px; /* Altura fija para las imágenes */
+    object-fit: cover; /* Ajusta la imagen dentro del contenedor */
+    border-radius: 8px 8px 0 0;
+}
+
+.dish h3 {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.dish p {
+    font-size: 1em;
+    color: #333;
+}
+
+.add-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #28a745;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.edit-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.delete-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #dc3545;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.add-button:hover {
+    background-color: #218838;
+}
+.dark-gray-background {
+    background-color: #a9a9a9; /* Gris oscuro pero claro */
+}
+.center{
+    justify-content: center;
+}
+.label-cart {
+    font-size: 2em; /* Tamaño grande */
+    text-align: right; /* Alineación a la derecha */
+    position: absolute; /* Posicionamiento absoluto */
+    right: 41px; /* Distancia desde el borde derecho */
+    top: 180px; /* Distancia desde el borde superior */
+    background-color: #28a745; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    padding: 2px 7px; /* Espaciado interno */
+    border-radius: 15px; /* Bordes redondeados */
+}
+
+.label-menu {
+    font-size: 2em; /* Tamaño grande */
+    text-align: right; /* Alineación a la derecha */
+    position: absolute; /* Posicionamiento absoluto */
+    right: 41px; /* Distancia desde el borde derecho */
+    top: 172px; /* Distancia desde el borde superior */
+    background-color: #28a745; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    padding: 2px 7px; /* Espaciado interno */
+    border-radius: 15px; /* Bordes redondeados */
+}
+
+.label-submit {
+    font-size: 2em; /* Tamaño grande */
+    text-align: right; /* Alineación a la derecha */
+    position: absolute; /* Posicionamiento absoluto */
+    right: 172px; /* Distancia desde el borde derecho */
+    top: 172px; /* Distancia desde el borde superior */
+    background-color: #ff9800; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    padding: 2px 8px; /* Espaciado interno */
+    border-radius: 15px; /* Bordes redondeados */
+}
+
+.label-submit:hover {
+    background-color: #e68900; /* Color naranja más oscuro */
+}
+
+.tamaño {
+    width: 235px; /* Ajusta el tamaño según sea necesario */
+    margin: 10px 0;
+}

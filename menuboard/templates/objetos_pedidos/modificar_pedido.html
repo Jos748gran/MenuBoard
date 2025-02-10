@@ -1,0 +1,27 @@
+{% extends "pedidos.html" %}
+{% load static %}
+
+{% block title %} Modificar Pedido {% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    <form method="post">
+        {% csrf_token %}
+        <label for="cliente">Cliente:</label>
+        {{ form.cliente }}
+        <label for="estado">Estado del pedido:</label>
+        {{ form.estado }}
+        <label for="mesa">Mesa:</label>
+        {{ form.mesa }}
+        <label for="item_pedido_list">Items del pedido:</label>
+        {{ form.item_pedido_list }}
+        <a href="{% url 'crear_item_pedido' %}">
+            <span class="button-icon-agregar"></span>
+        </a>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{% url 'pedidos' %}" class="btn btn-danger">Cancelar</a>
+    </form>
+
+{% endblock %}

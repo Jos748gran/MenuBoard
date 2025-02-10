@@ -1,0 +1,22 @@
+{% extends "clientes.html" %}
+{% load static %}
+
+{% block title %} Modificar Cliente {% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    <form method="post">
+        {% csrf_token %}
+            <label for="nombre">Nombre:</label>
+                {{ form.nombre}}
+            <label for="cedula">Cedula:</label>
+                {{ form.cedula}}
+            <label for="telefono">Telefono:</label>
+                {{ form.telefono}}
+        <br>
+        <br>
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'clientes' %}" class="btn btn-danger">Cancelar</a>
+</form>
+
+{% endblock %}
