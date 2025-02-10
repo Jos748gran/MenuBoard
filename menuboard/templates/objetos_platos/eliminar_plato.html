@@ -1,0 +1,21 @@
+{% extends "menus.html" %}
+{% load static %}
+
+{% block title %} Eliminar Plato {% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/tablas.css' %}">
+    <p>¿Estás seguro de que deseas eliminar el plato "{{ plato.nombre }}"?</p>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'menus' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

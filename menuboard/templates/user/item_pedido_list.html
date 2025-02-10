@@ -1,0 +1,38 @@
+{% extends "user.html" %}
+
+{% load static %}
+
+{% block title %}Platos escogidos{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'assets_user/css/menus.css' %}">
+    <div>
+        <a href="{% url 'user' %}" class="label-menu"><i class="fas fa-book-open"></i> Menu</a>
+    </div>
+    <div class="menu">X|
+        {% for item_pedido in item_pedido_list %}
+            <div class="dish">
+                <div>
+                    <div>
+                        {% if not item_pedido.pedido%}
+                            {% if item_pedido.plato.imagen %}
+                                <img src="{{ item_pedido.plato.imagen.url }}" alt="{{ item_pedido.plato.nombre }}">
+                            {% else %}
+                                Imagen no disponible
+                            {% endif %}
+                            <h3>{{ item_pedido.plato.nombre }}</h3>
+                            <p>Cantidad:{{ item_pedido.cantidad }}</p>
+                            <p>Observacion:{{ item_pedido.observacion }}</p>
+                            <p>{{ item_pedido.plato.precio }}$</p>
+                            <a href="{% url 'modificar_item_pedido' id=item_pedido.id %}" class="edit-button"><i
+                                    class="fas fa-edit"></i></a>
+                            <a href="{% url 'eliminar_item_pedido' id=item_pedido.id %}" class="delete-button"><i
+                                    class="fas fa-trash-alt"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'ordenar_pedido' %}" class="label-submit"><i class="fas fa-utensils"></i> Ordenar</a>
+{% endblock %}
